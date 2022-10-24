@@ -32,6 +32,7 @@
 , xorg
 , libxkbcommon
 , alsaOss
+, pango
 }:
 
 let
@@ -58,6 +59,7 @@ let
     sha256 = "sha256-00sCfI8dPsrWfh82pkt+b8KWWoWYuEk6y4KSv9pGamQ=";
   };
   runtimeLibs = [
+    cairo
     zlib
     bzip2
     libopus
@@ -67,12 +69,12 @@ let
     systemd
     libva
     libjpeg
+    libpng
     libdrm
     cairo
     harfbuzz
     icu69
     libICE
-    libpng
     libvdpau
     libX11
     openssl_1_1
@@ -85,7 +87,9 @@ let
     xorg.xcbutilkeysyms
     xorg.xcbutilrenderutil
     xorg.libSM
+    xorg.libXcomposite
     libxkbcommon
+    pango
   ];
   rpath = builtins.foldl' (rpath: lib: rpath + ":${lib.out}/lib") "${dbus.lib}/lib:${fontconfig.lib}/lib" runtimeLibs; 
 in qt5.mkDerivation rec {
@@ -103,6 +107,7 @@ in qt5.mkDerivation rec {
   installPhase = ''
   runHook preInstall
   chmod +x $out/lib/*.so*
+  sed -i "s|/app|$out|" $out/share/applications/com.valvesoftware.SteamLink.desktop
   runHook postInstall
   '';
   preFixup = ''
@@ -115,6 +120,10 @@ in qt5.mkDerivation rec {
   patchelf --set-interpreter ${glibc.out}/lib64/ld-linux-x86-64.so.2 $out/bin/steamlink
   patchelf --remove-needed libstdc++.so.6 $out/bin/steamlink
   patchelf --remove-needed libstdc++.so.6 $(find $out/lib -name '*.so*')
+  '';
+  fixupPhase = ''
+  runHook preFixup
+  runHook postFixup
   '';
   postFixup = ''
   mv $out/bin/steamlink $out/bin/steamlink-wrapped
