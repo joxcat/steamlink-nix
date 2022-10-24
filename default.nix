@@ -55,8 +55,8 @@ let
     };
   steamlinkSource = fetchFlatHub {
     url = "com.valvesoftware.SteamLink";
-    rev = "150423b2e5dad27cae9818bcaac6acfcd58817ba8b36d53ee2e68b3b47d94d33";
-    sha256 = "sha256-00sCfI8dPsrWfh82pkt+b8KWWoWYuEk6y4KSv9pGamQ=";
+    rev = "82d065bac78309c4d97ca46ca9842f2f44803ab9ba6785b7aeeb56ab7ae9d728";
+    sha256 = "sha256-fuAu5TusuZZjLn27jGFhw6v4bJa0XMZeutTO816/y4g=";
   };
   runtimeLibs = [
     cairo
